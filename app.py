@@ -111,6 +111,7 @@ def sam2_call(coords):
 		"click_labels": '1',
 		"click_object_ids": "obj1",
 		"output_frame_interval": 5,
+		"annotation_type": "box"
 	}
 	print(input)
 	output = replicate.run(
@@ -136,11 +137,9 @@ def detect_object(frame):
 	)
 	# Check if all objects contain "cls" : "gloves"
 	print(output)
-	for key, value in output.items():
-		
-			print('aa')
-			print(value)
-	return True
+	if 'gloves' in str(output):
+		return True
+	return False
 
 
 def parse_all_frames(frames):
@@ -154,7 +153,7 @@ def parse_all_frames(frames):
 	object_count = sum(detect_object(frame) for frame in frames)
 	
 	# Calculate the percentage of frames with objects
-	object_percentage = object_count / all
+	object_percentage = object / all
 	print (object_percentage)
 	# Check if the percentage is greater than or equal to 80%
 	if object_percentage >= 0.8:
@@ -186,9 +185,5 @@ def process_data(checkbox1, checkbox2, file):
 	else:
 		st.write("no gloves")
 	
-	
-	
-	
-
 if __name__ == "__main__":
 	main()
