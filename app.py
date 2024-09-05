@@ -43,7 +43,7 @@ def get_init_frame(video_path, output_path):
             break
         
         # Check if the current frame is the 10th one
-        if frame_count == 9:  # 9 because frame_count starts at 0
+        if frame_count == 19:  # 9 because frame_count starts at 0
             # Save the 10th frame as a JPEG image
             output_file = os.path.join(output_path, f"{frame_count:05d}.jpg")
             cv2.imwrite(output_file, frame)
@@ -58,6 +58,8 @@ def get_init_frame(video_path, output_path):
 # Call the function in process_data
 
 def show_plot(frame_path, coords):
+	if coords.ndim == 1:
+		coords = coords.reshape(-1, 2)
 	plt.figure(figsize=(12, 8))
 	plt.title(f"frame {10}")
 	plt.imshow(Image.open(frame_path))
@@ -100,6 +102,7 @@ def sam2_input(coords):
 def fetch_http_url_for_input():
     # til object store is figured out, this will be the input
     return "https://replicate.delivery/pbxt/LXHeP3A0Z2LV8KU0TLruS39fVY5ldqVnHABbv6yfUDXnmvKB/test_small.mp4"
+    # return "https://replicate.delivery/pbxt/LYIPVbDGiVyr4KcK9lIrAUEkDPF2mGiC745JzdQU1Vz7jmEY/gloves-2.mp4"
 
 def sam2_call(coords):
 	coords=np.array(coords, dtype=int)
@@ -175,15 +178,15 @@ def process_data(checkbox1, checkbox2, file):
 	
 	# Call the function in process_data
 	get_init_frame(file_path, os.path.join("uploads", "output_frames"))
-	coords = generate_init(os.path.join("uploads", "output_frames", "00009.jpg"))
+	coords = generate_init(os.path.join("uploads", "output_frames", "00019.jpg"))
 	plot = sam2_input(coords)
-	show_plot(os.path.join("uploads", "output_frames", "00009.jpg"), plot)
+	show_plot(os.path.join("uploads", "output_frames", "00019.jpg"), plot)
 	frames = sam2_call(plot)
 	result = parse_all_frames(frames)
 	if result:
-		st.write("gloves detected")
+		st.success("gloves detected")
 	else:
-		st.write("no gloves")
+		st.warning("no gloves")
 	
 if __name__ == "__main__":
 	main()
